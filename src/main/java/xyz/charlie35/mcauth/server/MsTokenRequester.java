@@ -162,9 +162,9 @@ public class MsTokenRequester {
         public String token;
         public String refreshToken;
 
-        public TokenPair(String tok, String rtok) {
-            token=tok;
-            refreshToken=rtok;
+        public TokenPair(String token, String refreshToken) {
+            this.token = token;
+            this.refreshToken = refreshToken;
         }
     }
 }

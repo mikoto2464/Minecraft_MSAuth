@@ -2,6 +2,7 @@ package xyz.charlie35.mcauth.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public class CachedTokenHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void handle(@NotNull HttpExchange httpExchange) throws IOException {
         if ("GET".equals(httpExchange.getRequestMethod())) {
             Map<String, String> requestParameters = queryToMap(httpExchange.getRequestURI().getQuery());
             if (!requestParameters.containsKey("uid")) {

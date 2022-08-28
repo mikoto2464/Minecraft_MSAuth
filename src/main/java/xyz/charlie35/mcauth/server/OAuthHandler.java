@@ -2,6 +2,7 @@ package xyz.charlie35.mcauth.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class OAuthHandler implements HttpHandler {
 
 
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void handle(@NotNull HttpExchange httpExchange) throws IOException {
         if("GET".equals(httpExchange.getRequestMethod())) {
             Map<String, String> requestParameters = queryToMap(httpExchange.getRequestURI().getQuery());
             if (!requestParameters.containsKey("code") || !requestParameters.containsKey("state")) {
@@ -102,7 +103,7 @@ public class OAuthHandler implements HttpHandler {
         }
     }
 
-    public Map<String, String> queryToMap(String query) {
+    public Map<String, String> queryToMap(@NotNull String query) {
         Map<String, String> result = new HashMap<>();
         for (String param : query.split("&")) {
             String[] entry = param.split("=");

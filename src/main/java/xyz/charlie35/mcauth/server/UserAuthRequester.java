@@ -1,5 +1,7 @@
 package xyz.charlie35.mcauth.server;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -96,7 +98,7 @@ public class UserAuthRequester {
             throw new UnsupportedOperationException(e);
         }
     }
-    static String urlEncodeUTF8(Map<?,?> map) {
+    static @NotNull String urlEncodeUTF8(Map<?,?> map) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<?,?> entry : map.entrySet()) {
             if (sb.length() > 0) {

@@ -113,8 +113,8 @@ public class MinecraftTokenRequestor {
         public String accessToken;
         public String username;
         public MinecraftToken(String a, String b) {
-            accessToken=a;
-            username=b;
+            accessToken = a;
+            username = b;
         }
     }
 
@@ -123,9 +123,9 @@ public class MinecraftTokenRequestor {
         public String name;
         public String skinURL;
         public MinecraftProfile(String a, String b, String c){
-            uuid=a;
-            name=b;
-            skinURL=c;
+            uuid = a;
+            name = b;
+            skinURL = c;
         }
     }
 }

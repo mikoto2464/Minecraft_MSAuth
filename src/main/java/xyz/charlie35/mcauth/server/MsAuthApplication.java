@@ -17,6 +17,7 @@ public class MsAuthApplication {
     public static String CLIENT_ID;
     public static String CLIENT_SECRET;
     public static String REDIRECT_URI;
+    public static int PORT = 80;
     public static final int TOKEN_STORE_TIME_MS = 30 * 1000;
     public static final int TIME_BETWEEN_REQS = 4000;
 
@@ -25,14 +26,14 @@ public class MsAuthApplication {
         System.out.println("-- Copyright charlie353535");
         System.out.println("-- Modify mikoto2464");
 
-        if (args.length <= 4) {
+        if (args.length < 3) {
             throw new NullPointerException("No such arguments." +
                     "Arguments should be like: <client ID> <client secret> <redirect URI> <port>");
+        } else {
+            CLIENT_ID = args[0];
+            CLIENT_SECRET = args[1];
+            REDIRECT_URI = args[2];
         }
-
-        CLIENT_ID = args[0];
-        CLIENT_SECRET = args[1];
-        REDIRECT_URI = args[2];
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS);
 
@@ -42,12 +43,12 @@ public class MsAuthApplication {
         server.createContext("/get", new CachedTokenHandler());
         server.setExecutor(threadPoolExecutor);
         server.start();
-        System.out.println("Server started on port "+args[3]+" ["+REDIRECT_URI+"]");
+        System.out.println("Server has already started on port " + PORT + " [" + REDIRECT_URI + "]");
     }
 
     public static boolean handleRateLimit(String client) {
         lastRequestTime.putIfAbsent(client, 0L);
-        if (System.currentTimeMillis()-lastRequestTime.get(client) <= TIME_BETWEEN_REQS) {
+        if (System.currentTimeMillis() - lastRequestTime.get(client) <= TIME_BETWEEN_REQS) {
             //lastRequestTime.put(client, System.currentTimeMillis());
             return true;
         }
@@ -58,7 +59,7 @@ public class MsAuthApplication {
     public static long timeToNoRateLimit(String client) {
         if (!lastRequestTime.containsKey(client))
             return 0;
-        return 4000L-(System.currentTimeMillis()-lastRequestTime.get(client));
+        return 4000L-(System.currentTimeMillis() - lastRequestTime.get(client));
     }
 
     static class AuthInfo {
@@ -66,9 +67,9 @@ public class MsAuthApplication {
         public String info;
         public String addr;
         public AuthInfo(long a, String b, String c) {
-            time=a;
-            info=b;
-            addr=c;
+            time = a;
+            info = b;
+            addr = c;
         }
     }
 }
