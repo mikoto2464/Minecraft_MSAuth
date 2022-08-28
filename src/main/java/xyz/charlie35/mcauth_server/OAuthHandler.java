@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static xyz.charlie35.mcauth_server.AuthManagerWebServer.authCache;
-import static xyz.charlie35.mcauth_server.AuthManagerWebServer.log;
+import static xyz.charlie35.mcauth_server.MsAuthApplication.authCache;
 
 public class OAuthHandler implements HttpHandler {
 
@@ -43,8 +41,8 @@ public class OAuthHandler implements HttpHandler {
             if (httpExchange.getRequestHeaders().containsKey("X-Forwarded-For"))
                 client = httpExchange.getRequestHeaders().getFirst("X-Forwarded-For").split(",")[0];
 
-            int ttnr = (int) AuthManagerWebServer.timeToNoRateLimit(client);
-            if (AuthManagerWebServer.handleRatelimit(client)) {
+            int ttnr = (int) MsAuthApplication.timeToNoRateLimit(client);
+            if (MsAuthApplication.handleRateLimit(client)) {
                 String httpResponse = "429 Ratelimited -- come back in "+ttnr+"ms";
                 httpExchange.sendResponseHeaders(429, httpResponse.length());
                 httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
@@ -52,20 +50,20 @@ public class OAuthHandler implements HttpHandler {
             }
 
             try {
-                MSTokenRequestor.TokenPair authToken;
+                MsTokenRequester.TokenPair authToken;
                 if (reauth) {
                     System.out.println("> Refreshing TOKEN for " + client);
-                    authToken = MSTokenRequestor.refreshFor(code);
+                    authToken = MsTokenRequester.refreshFor(code);
                 }else {
                     System.out.println("> Requesting TOKEN for " + client);
-                    authToken = MSTokenRequestor.getFor(code);
+                    authToken = MsTokenRequester.getFor(code);
                 }
 
                 System.out.println("> Authenticating with XBL for " + client);
-                XBLTokenRequestor.XBLToken xblToken = XBLTokenRequestor.getFor(authToken.token);
+                XBLTokenRequester.XBLToken xblToken = XBLTokenRequester.getFor(authToken.token);
 
                 System.out.println("> Authenticating with XSTS for " + client);
-                XSTSTokenRequestor.XSTSToken xstsToken = XSTSTokenRequestor.getFor(xblToken.token);
+                XSTSTokenRequester.XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.token);
 
                 System.out.println("> Authenticating with Minecraft for " + client);
                 MinecraftTokenRequestor.MinecraftToken minecraftToken = MinecraftTokenRequestor.getFor(xstsToken);
@@ -85,7 +83,7 @@ public class OAuthHandler implements HttpHandler {
 
                 if (uid!=null) {
                     System.out.println("> Cached auth for "+client);
-                    authCache.put(uid, new AuthManagerWebServer.AuthInfo(System.currentTimeMillis(), httpResponse, client));
+                    authCache.put(uid, new MsAuthApplication.AuthInfo(System.currentTimeMillis(), httpResponse, client));
                 }
 
                 httpExchange.getResponseHeaders().add("Content-type","application/json");

@@ -13,8 +13,8 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-public class XSTSTokenRequestor {
-    public static XSTSTokenRequestor.XSTSToken getFor(String token) throws IOException, AuthenticationException {
+public class XSTSTokenRequester {
+    public static XSTSTokenRequester.XSTSToken getFor(String token) throws IOException, AuthenticationException {
         try {
             URL url = new URL("https://xsts.auth.xboxlive.com/xsts/authorize");
             URLConnection con = url.openConnection();

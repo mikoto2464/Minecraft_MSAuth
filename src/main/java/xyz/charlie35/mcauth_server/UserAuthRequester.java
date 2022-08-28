@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class UserAuthRequestor {
+public class UserAuthRequester {
     public static String getTokenFor(String u, String p, String client) throws AuthenticationException {
         String cookie = "";
         String PPFT = "";

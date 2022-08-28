@@ -12,7 +12,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-public class XBLTokenRequestor {
+public class XBLTokenRequester {
     public static XBLToken getFor(String token) throws IOException, AuthenticationException {
         try {
             URL url = new URL("https://user.auth.xboxlive.com/user/authenticate");

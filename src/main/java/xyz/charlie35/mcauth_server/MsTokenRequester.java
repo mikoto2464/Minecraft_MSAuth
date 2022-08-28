@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static xyz.charlie35.mcauth_server.AuthManagerWebServer.REDIRECT_URI;
+import static xyz.charlie35.mcauth_server.MsAuthApplication.REDIRECT_URI;
 
-public class MSTokenRequestor {
+public class MsTokenRequester {
     public static TokenPair getFor(String authCode) throws IOException, AuthenticationException {
         try {
             Map<String, String> arguments = new HashMap<>();
-            arguments.put("client_id", AuthManagerWebServer.CLIENT_ID);
-            arguments.put("client_secret", AuthManagerWebServer.CLIENT_SECRET);
+            arguments.put("client_id", MsAuthApplication.CLIENT_ID);
+            arguments.put("client_secret", MsAuthApplication.CLIENT_SECRET);
             arguments.put("code", authCode);
             arguments.put("grant_type", "authorization_code");
             arguments.put("redirect_uri", REDIRECT_URI);
@@ -115,8 +115,8 @@ public class MSTokenRequestor {
     public static TokenPair refreshFor(String code) throws AuthenticationException, IOException {
         try {
             Map<String, String> arguments = new HashMap<>();
-            arguments.put("client_id", AuthManagerWebServer.CLIENT_ID);
-            arguments.put("client_secret", AuthManagerWebServer.CLIENT_SECRET);
+            arguments.put("client_id", MsAuthApplication.CLIENT_ID);
+            arguments.put("client_secret", MsAuthApplication.CLIENT_SECRET);
             arguments.put("refresh_token", code);
             arguments.put("grant_type", "refresh_token");
             arguments.put("redirect_uri", REDIRECT_URI);

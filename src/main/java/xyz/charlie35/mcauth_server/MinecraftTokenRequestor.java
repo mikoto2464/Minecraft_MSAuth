@@ -1,6 +1,5 @@
 package xyz.charlie35.mcauth_server;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -11,12 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MinecraftTokenRequestor {
-    public static MinecraftTokenRequestor.MinecraftToken getFor(XSTSTokenRequestor.XSTSToken xstsToken) throws IOException {
+    public static MinecraftTokenRequestor.MinecraftToken getFor(XSTSTokenRequester.XSTSToken xstsToken) throws IOException {
         try {
             URL url = new URL("https://api.minecraftservices.com/authentication/login_with_xbox");
             URLConnection con = url.openConnection();

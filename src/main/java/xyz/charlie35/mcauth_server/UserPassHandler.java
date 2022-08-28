@@ -9,8 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static xyz.charlie35.mcauth_server.AuthManagerWebServer.authCache;
-
 public class UserPassHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -28,16 +26,16 @@ public class UserPassHandler implements HttpHandler {
                 client = httpExchange.getRequestHeaders().getFirst("X-Forwarded-For").split(",")[0];
 
             try {
-                String code = UserAuthRequestor.getTokenFor(requestParameters.get("user"), requestParameters.get("pass"), client);
+                String code = UserAuthRequester.getTokenFor(requestParameters.get("user"), requestParameters.get("pass"), client);
 
                 System.out.println("> Requesting TOKEN for "+client);
-                MSTokenRequestor.TokenPair authToken = MSTokenRequestor.getForUserPass(code);
+                MsTokenRequester.TokenPair authToken = MsTokenRequester.getForUserPass(code);
 
                 System.out.println("> Authenticating with XBL for " + client);
-                XBLTokenRequestor.XBLToken xblToken = XBLTokenRequestor.getForUserPass(authToken.token);
+                XBLTokenRequester.XBLToken xblToken = XBLTokenRequester.getForUserPass(authToken.token);
 
                 System.out.println("> Authenticating with XSTS for " + client);
-                XSTSTokenRequestor.XSTSToken xstsToken = XSTSTokenRequestor.getFor(xblToken.token);
+                XSTSTokenRequester.XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.token);
 
                 System.out.println("> Authenticating with Minecraft for " + client);
                 MinecraftTokenRequestor.MinecraftToken minecraftToken = MinecraftTokenRequestor.getFor(xstsToken);

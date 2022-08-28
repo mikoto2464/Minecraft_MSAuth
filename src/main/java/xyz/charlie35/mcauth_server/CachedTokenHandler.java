@@ -25,8 +25,8 @@ public class CachedTokenHandler implements HttpHandler {
             if (httpExchange.getRequestHeaders().containsKey("X-Forwarded-For"))
                 client = httpExchange.getRequestHeaders().getFirst("X-Forwarded-For").split(",")[0];
 
-            int ttnr = (int) AuthManagerWebServer.timeToNoRateLimit(client);
-            if (AuthManagerWebServer.handleRatelimit(client)) {
+            int ttnr = (int) MsAuthApplication.timeToNoRateLimit(client);
+            if (MsAuthApplication.handleRateLimit(client)) {
                 String httpResponse = "429 Ratelimited -- come back in "+ttnr+"ms";
                 httpExchange.sendResponseHeaders(429, httpResponse.length());
                 httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
@@ -45,14 +45,14 @@ public class CachedTokenHandler implements HttpHandler {
 
             System.out.println("> Request auth for "+client);
 
-            if (!AuthManagerWebServer.authCache.containsKey(uid)){
+            if (!MsAuthApplication.authCache.containsKey(uid)){
                 String _404 = "404 Not found";
                 httpExchange.sendResponseHeaders(404, _404.length());
                 httpExchange.getResponseBody().write(_404.getBytes(StandardCharsets.US_ASCII));
                 return;
             }
 
-            AuthManagerWebServer.AuthInfo authInfo = AuthManagerWebServer.authCache.get(uid);
+            MsAuthApplication.AuthInfo authInfo = MsAuthApplication.authCache.get(uid);
             if (!authInfo.addr.equals(client)) {
                 String _401 = "401 Unauthorized";
                 httpExchange.sendResponseHeaders(401, _401.length());
@@ -60,15 +60,15 @@ public class CachedTokenHandler implements HttpHandler {
                 return;
             }
 
-            if (System.currentTimeMillis() - authInfo.time > AuthManagerWebServer.TOKEN_STORE_TIME_MS) {
-                AuthManagerWebServer.authCache.remove(uid);
+            if (System.currentTimeMillis() - authInfo.time > MsAuthApplication.TOKEN_STORE_TIME_MS) {
+                MsAuthApplication.authCache.remove(uid);
                 String _404 = "404 Not found";
                 httpExchange.sendResponseHeaders(404, _404.length());
                 httpExchange.getResponseBody().write(_404.getBytes(StandardCharsets.US_ASCII));
                 return;
             }
 
-            AuthManagerWebServer.authCache.remove(uid);
+            MsAuthApplication.authCache.remove(uid);
 
             String resp = authInfo.info;
             httpExchange.sendResponseHeaders(200, resp.length());

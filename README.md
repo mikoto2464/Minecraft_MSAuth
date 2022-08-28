@@ -15,7 +15,7 @@
 **Note:** Storage ID is *not* required, and will be ignored if it is an invalid UUID.
 
 ### OR, If you want to authenticate a user with ZERO interaction with their user/pass:
-1. Make a request to: `https://YOUR_SERVER/userpass?user=YOUR_MS_EMAIL&pass=YOUR_MS_PASS`
+1. Make a request to: `https://YOUR_SERVER/userPass?user=YOUR_MS_EMAIL&pass=YOUR_MS_PASS`
 2. Done
 
 I have a public instance on:

@@ -3,19 +3,20 @@ plugins {
 }
 
 group 'xyz.charlie35'
-version '1.0-SNAPSHOT'
+version '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'org.json', name: 'json', version: '20201115'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    compile 'org.json:json:20220320'
 }
 
 jar {
     manifest {
-        attributes "Main-Class": "xyz.charlie35.mcauth_server.AuthManagerWebServer"
+        attributes "Main-Class": "xyz.charlie35.mcauth_server.MsAuthApplication"
     }
 
     from {
