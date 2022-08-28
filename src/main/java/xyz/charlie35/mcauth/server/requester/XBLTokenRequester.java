@@ -1,6 +1,8 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.requester;
 
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.model.XBLToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,15 +112,6 @@ public class XBLTokenRequester {
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
-        }
-    }
-
-    static class XBLToken {
-        public String token;
-        public String uhs;
-        public XBLToken(String t, String u) {
-            token=t;
-            uhs=u;
         }
     }
 }

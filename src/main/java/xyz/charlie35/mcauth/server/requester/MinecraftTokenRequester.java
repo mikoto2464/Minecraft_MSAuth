@@ -1,6 +1,10 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.requester;
 
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.model.MinecraftProfile;
+import xyz.charlie35.mcauth.server.model.MinecraftToken;
+import xyz.charlie35.mcauth.server.model.XSTSToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +16,8 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-public class MinecraftTokenRequestor {
-    public static MinecraftTokenRequestor.MinecraftToken getFor(XSTSTokenRequester.XSTSToken xstsToken) throws IOException {
+public class MinecraftTokenRequester {
+    public static MinecraftToken getFor(XSTSToken xstsToken) throws IOException {
         try {
             URL url = new URL("https://api.minecraftservices.com/authentication/login_with_xbox");
             URLConnection con = url.openConnection();
@@ -22,7 +26,7 @@ public class MinecraftTokenRequestor {
             http.setDoOutput(true);
 
             JSONObject request = new JSONObject();
-            request.put("identityToken","XBL3.0 x="+xstsToken.uhs+";"+xstsToken.token);
+            request.put("identityToken","XBL3.0 x=" + xstsToken.getUhs() + ";" + xstsToken.getToken());
 
             String body = request.toString();
 
@@ -57,7 +61,7 @@ public class MinecraftTokenRequestor {
             HttpURLConnection http = (HttpURLConnection) con;
             http.setRequestMethod("GET");
 
-            http.setRequestProperty("Authorization", "Bearer "+minecraftToken.accessToken);
+            http.setRequestProperty("Authorization", "Bearer " + minecraftToken.getAccessToken());
             http.setRequestProperty("Host","api.minecraftservices.com");
             http.connect();
 
@@ -78,14 +82,14 @@ public class MinecraftTokenRequestor {
         }
     }
 
-    public static MinecraftTokenRequestor.MinecraftProfile getProfile(MinecraftToken minecraftToken) throws AuthenticationException, IOException {
+    public static MinecraftProfile getProfile(MinecraftToken minecraftToken) throws AuthenticationException, IOException {
         try {
             URL url = new URL("https://api.minecraftservices.com/minecraft/profile");
             URLConnection con = url.openConnection();
             HttpURLConnection http = (HttpURLConnection) con;
             http.setRequestMethod("GET");
 
-            http.setRequestProperty("Authorization", "Bearer "+minecraftToken.accessToken);
+            http.setRequestProperty("Authorization", "Bearer " + minecraftToken.getAccessToken());
             http.setRequestProperty("Host","api.minecraftservices.com");
             http.connect();
 
@@ -106,26 +110,6 @@ public class MinecraftTokenRequestor {
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
-        }
-    }
-
-    static class MinecraftToken {
-        public String accessToken;
-        public String username;
-        public MinecraftToken(String a, String b) {
-            accessToken = a;
-            username = b;
-        }
-    }
-
-    static class MinecraftProfile {
-        public String uuid;
-        public String name;
-        public String skinURL;
-        public MinecraftProfile(String a, String b, String c){
-            uuid = a;
-            name = b;
-            skinURL = c;
         }
     }
 }

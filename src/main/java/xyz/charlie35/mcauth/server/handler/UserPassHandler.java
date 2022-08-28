@@ -1,8 +1,11 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.model.*;
+import xyz.charlie35.mcauth.server.requester.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,27 +32,27 @@ public class UserPassHandler implements HttpHandler {
                 String code = UserAuthRequester.getTokenFor(requestParameters.get("user"), requestParameters.get("pass"), client);
 
                 System.out.println("> Requesting TOKEN for "+client);
-                MsTokenRequester.TokenPair authToken = MsTokenRequester.getForUserPass(code);
+                TokenPair authToken = MsTokenRequester.getForUserPass(code);
 
                 System.out.println("> Authenticating with XBL for " + client);
-                XBLTokenRequester.XBLToken xblToken = XBLTokenRequester.getForUserPass(authToken.token);
+                XBLToken xblToken = XBLTokenRequester.getForUserPass(authToken.getToken());
 
                 System.out.println("> Authenticating with XSTS for " + client);
-                XSTSTokenRequester.XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.token);
+                XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.getToken());
 
                 System.out.println("> Authenticating with Minecraft for " + client);
-                MinecraftTokenRequestor.MinecraftToken minecraftToken = MinecraftTokenRequestor.getFor(xstsToken);
+                MinecraftToken minecraftToken = MinecraftTokenRequester.getFor(xstsToken);
 
                 System.out.println("> Checking ownership and getting profile for "+client);
-                MinecraftTokenRequestor.checkAccount(minecraftToken);
-                MinecraftTokenRequestor.MinecraftProfile minecraftProfile = MinecraftTokenRequestor.getProfile(minecraftToken);
+                MinecraftTokenRequester.checkAccount(minecraftToken);
+                MinecraftProfile minecraftProfile = MinecraftTokenRequester.getProfile(minecraftToken);
 
                 JSONObject authResult = new JSONObject();
-                authResult.put("access_token", minecraftToken.accessToken);
-                authResult.put("refresh_token", authToken.refreshToken);
-                authResult.put("uuid", minecraftProfile.uuid);
-                authResult.put("name", minecraftProfile.name);
-                authResult.put("skin", minecraftProfile.skinURL);
+                authResult.put("access_token", minecraftToken.getAccessToken());
+                authResult.put("refresh_token", authToken.getRefreshToken());
+                authResult.put("uuid", minecraftProfile.getUuid());
+                authResult.put("name", minecraftProfile.getName());
+                authResult.put("skin", minecraftProfile.getSkinUrl());
 
                 String httpResponse = authResult.toString();
 

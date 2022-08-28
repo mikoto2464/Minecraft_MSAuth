@@ -1,9 +1,16 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.MsAuthApplication;
+import xyz.charlie35.mcauth.server.model.*;
+import xyz.charlie35.mcauth.server.requester.XBLTokenRequester;
+import xyz.charlie35.mcauth.server.requester.XSTSTokenRequester;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.requester.MinecraftTokenRequester;
+import xyz.charlie35.mcauth.server.requester.MsTokenRequester;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -51,7 +58,7 @@ public class OAuthHandler implements HttpHandler {
             }
 
             try {
-                MsTokenRequester.TokenPair authToken;
+                TokenPair authToken;
                 if (reauth) {
                     System.out.println("> Refreshing TOKEN for " + client);
                     authToken = MsTokenRequester.refreshFor(code);
@@ -61,30 +68,30 @@ public class OAuthHandler implements HttpHandler {
                 }
 
                 System.out.println("> Authenticating with XBL for " + client);
-                XBLTokenRequester.XBLToken xblToken = XBLTokenRequester.getFor(authToken.token);
+                XBLToken xblToken = XBLTokenRequester.getFor(authToken.getToken());
 
                 System.out.println("> Authenticating with XSTS for " + client);
-                XSTSTokenRequester.XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.token);
+                XSTSToken xstsToken = XSTSTokenRequester.getFor(xblToken.getToken());
 
                 System.out.println("> Authenticating with Minecraft for " + client);
-                MinecraftTokenRequestor.MinecraftToken minecraftToken = MinecraftTokenRequestor.getFor(xstsToken);
+                MinecraftToken minecraftToken = MinecraftTokenRequester.getFor(xstsToken);
 
                 System.out.println("> Checking ownership and getting profile for "+client);
-                MinecraftTokenRequestor.checkAccount(minecraftToken);
-                MinecraftTokenRequestor.MinecraftProfile minecraftProfile = MinecraftTokenRequestor.getProfile(minecraftToken);
+                MinecraftTokenRequester.checkAccount(minecraftToken);
+                MinecraftProfile minecraftProfile = MinecraftTokenRequester.getProfile(minecraftToken);
 
                 JSONObject authResult = new JSONObject();
-                authResult.put("access_token", minecraftToken.accessToken);
-                authResult.put("refresh_token", authToken.refreshToken);
-                authResult.put("uuid", minecraftProfile.uuid);
-                authResult.put("name", minecraftProfile.name);
-                authResult.put("skin", minecraftProfile.skinURL);
+                authResult.put("access_token", minecraftToken.getAccessToken());
+                authResult.put("refresh_token", authToken.getRefreshToken());
+                authResult.put("uuid", minecraftProfile.getUuid());
+                authResult.put("name", minecraftProfile.getName());
+                authResult.put("skin", minecraftProfile.getSkinUrl());
 
                 String httpResponse = authResult.toString();
 
                 if (uid!=null) {
                     System.out.println("> Cached auth for "+client);
-                    authCache.put(uid, new MsAuthApplication.AuthInfo(System.currentTimeMillis(), httpResponse, client));
+                    authCache.put(uid, new AuthInfo(System.currentTimeMillis(), httpResponse, client));
                 }
 
                 httpExchange.getResponseHeaders().add("Content-type","application/json");

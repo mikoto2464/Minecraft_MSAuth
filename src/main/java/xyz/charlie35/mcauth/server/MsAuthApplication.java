@@ -2,6 +2,10 @@ package xyz.charlie35.mcauth.server;
 
 import com.sun.net.httpserver.HttpServer;
 import org.jetbrains.annotations.NotNull;
+import xyz.charlie35.mcauth.server.handler.CachedTokenHandler;
+import xyz.charlie35.mcauth.server.handler.OAuthHandler;
+import xyz.charlie35.mcauth.server.handler.UserPassHandler;
+import xyz.charlie35.mcauth.server.model.AuthInfo;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -60,16 +64,5 @@ public class MsAuthApplication {
         if (!lastRequestTime.containsKey(client))
             return 0;
         return 4000L-(System.currentTimeMillis() - lastRequestTime.get(client));
-    }
-
-    static class AuthInfo {
-        public long time;
-        public String info;
-        public String addr;
-        public AuthInfo(long a, String b, String c) {
-            time = a;
-            info = b;
-            addr = c;
-        }
     }
 }

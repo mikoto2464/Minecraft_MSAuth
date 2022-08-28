@@ -1,7 +1,9 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.requester;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.model.XSTSToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 public class XSTSTokenRequester {
-    public static XSTSTokenRequester.XSTSToken getFor(String token) throws IOException, AuthenticationException {
+    public static XSTSToken getFor(String token) throws IOException, AuthenticationException {
         try {
             URL url = new URL("https://xsts.auth.xboxlive.com/xsts/authorize");
             URLConnection con = url.openConnection();
@@ -65,15 +67,6 @@ public class XSTSTokenRequester {
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
-        }
-    }
-
-    static class XSTSToken {
-        public String token;
-        public String uhs;
-        public XSTSToken(String t, String u) {
-            token=t;
-            uhs=u;
         }
     }
 }

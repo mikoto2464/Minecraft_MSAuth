@@ -1,6 +1,7 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.requester;
 
 import org.jetbrains.annotations.NotNull;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
 
 import java.io.*;
 import java.net.*;
@@ -10,6 +11,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static xyz.charlie35.mcauth.server.util.StringUtil.urlEncodeUTF8;
 
 public class UserAuthRequester {
     public static String getTokenFor(String u, String p, String client) throws AuthenticationException {
@@ -89,26 +92,5 @@ public class UserAuthRequester {
         }
 
         return code;
-    }
-
-    static String urlEncodeUTF8(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
-        }
-    }
-    static @NotNull String urlEncodeUTF8(Map<?,?> map) {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<?,?> entry : map.entrySet()) {
-            if (sb.length() > 0) {
-                sb.append("&");
-            }
-            sb.append(String.format("%s=%s",
-                    urlEncodeUTF8(entry.getKey().toString()),
-                    urlEncodeUTF8(entry.getValue().toString())
-            ));
-        }
-        return sb.toString();
     }
 }

@@ -1,8 +1,10 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.jetbrains.annotations.NotNull;
+import xyz.charlie35.mcauth.server.MsAuthApplication;
+import xyz.charlie35.mcauth.server.model.AuthInfo;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -53,15 +55,15 @@ public class CachedTokenHandler implements HttpHandler {
                 return;
             }
 
-            MsAuthApplication.AuthInfo authInfo = MsAuthApplication.authCache.get(uid);
-            if (!authInfo.addr.equals(client)) {
+            AuthInfo authInfo = MsAuthApplication.authCache.get(uid);
+            if (!authInfo.getAddress().equals(client)) {
                 String _401 = "401 Unauthorized";
                 httpExchange.sendResponseHeaders(401, _401.length());
                 httpExchange.getResponseBody().write(_401.getBytes(StandardCharsets.US_ASCII));
                 return;
             }
 
-            if (System.currentTimeMillis() - authInfo.time > MsAuthApplication.TOKEN_STORE_TIME_MS) {
+            if (System.currentTimeMillis() - authInfo.getTime() > MsAuthApplication.TOKEN_STORE_TIME_MS) {
                 MsAuthApplication.authCache.remove(uid);
                 String _404 = "404 Not found";
                 httpExchange.sendResponseHeaders(404, _404.length());
@@ -71,7 +73,7 @@ public class CachedTokenHandler implements HttpHandler {
 
             MsAuthApplication.authCache.remove(uid);
 
-            String resp = authInfo.info;
+            String resp = authInfo.getInfo();
             httpExchange.sendResponseHeaders(200, resp.length());
             httpExchange.getResponseBody().write(resp.getBytes(StandardCharsets.US_ASCII));
         }

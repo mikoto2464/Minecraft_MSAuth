@@ -1,17 +1,21 @@
-package xyz.charlie35.mcauth.server;
+package xyz.charlie35.mcauth.server.requester;
 
 import org.json.JSONObject;
+import xyz.charlie35.mcauth.server.MsAuthApplication;
+import xyz.charlie35.mcauth.server.exception.AuthenticationException;
+import xyz.charlie35.mcauth.server.model.TokenPair;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+
+import static xyz.charlie35.mcauth.server.util.StringUtil.urlEncodeUTF8;
 
 public class MsTokenRequester {
     public static TokenPair getFor(String authCode) throws IOException, AuthenticationException {
@@ -24,8 +28,8 @@ public class MsTokenRequester {
             arguments.put("redirect_uri", MsAuthApplication.REDIRECT_URI);
             StringJoiner sj = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet())
-                sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
-                        + URLEncoder.encode(entry.getValue(), "UTF-8"));
+                sj.add(urlEncodeUTF8(entry.getKey()) + "="
+                        + urlEncodeUTF8(entry.getValue()));
             byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
             int length = out.length;
 
@@ -71,8 +75,8 @@ public class MsTokenRequester {
             arguments.put("scope","service::user.auth.xboxlive.com::MBI_SSL");
             StringJoiner sj = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet())
-                sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
-                        + URLEncoder.encode(entry.getValue(), "UTF-8"));
+                sj.add(urlEncodeUTF8(entry.getKey()) + "="
+                        + urlEncodeUTF8(entry.getValue()));
             byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
             int length = out.length;
 
@@ -120,8 +124,8 @@ public class MsTokenRequester {
             arguments.put("redirect_uri", MsAuthApplication.REDIRECT_URI);
             StringJoiner sj = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet())
-                sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
-                        + URLEncoder.encode(entry.getValue(), "UTF-8"));
+                sj.add(urlEncodeUTF8(entry.getKey()) + "="
+                        + urlEncodeUTF8(entry.getValue()));
             byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
             int length = out.length;
 
@@ -155,16 +159,6 @@ public class MsTokenRequester {
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
-        }
-    }
-
-    static class TokenPair {
-        public String token;
-        public String refreshToken;
-
-        public TokenPair(String token, String refreshToken) {
-            this.token = token;
-            this.refreshToken = refreshToken;
         }
     }
 }
