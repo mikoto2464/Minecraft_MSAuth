@@ -16,14 +16,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class MsAuthApplication {
     public static ConcurrentHashMap<UUID, AuthInfo> authCache = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<String, Long> lastRequestTime = new ConcurrentHashMap<>();
     public static final int THREADS = 50;
     public static String CLIENT_ID;
     public static String CLIENT_SECRET;
     public static String REDIRECT_URI;
     public static int PORT = 80;
     public static final int TOKEN_STORE_TIME_MS = 30 * 1000;
-    public static final int TIME_BETWEEN_REQS = 4000;
 
     public static void main(String @NotNull [] args) throws IOException {
         System.out.println("Starting Minecraft auth webserver");
@@ -48,21 +46,5 @@ public class MsAuthApplication {
         server.setExecutor(threadPoolExecutor);
         server.start();
         System.out.println("Server has already started on port " + PORT + " [" + REDIRECT_URI + "]");
-    }
-
-    public static boolean handleRateLimit(String client) {
-        lastRequestTime.putIfAbsent(client, 0L);
-        if (System.currentTimeMillis() - lastRequestTime.get(client) <= TIME_BETWEEN_REQS) {
-            //lastRequestTime.put(client, System.currentTimeMillis());
-            return true;
-        }
-        lastRequestTime.put(client, System.currentTimeMillis());
-        return false;
-    }
-
-    public static long timeToNoRateLimit(String client) {
-        if (!lastRequestTime.containsKey(client))
-            return 0;
-        return 4000L-(System.currentTimeMillis() - lastRequestTime.get(client));
     }
 }

@@ -8,11 +8,10 @@ import xyz.charlie35.mcauth.server.model.AuthInfo;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static xyz.charlie35.mcauth.server.util.HttpUtil.queryToMap;
+import static xyz.charlie35.mcauth.server.util.HttpUtil.*;
 
 public class CachedTokenHandler implements HttpHandler {
     @Override
@@ -30,8 +29,8 @@ public class CachedTokenHandler implements HttpHandler {
             if (httpExchange.getRequestHeaders().containsKey("X-Forwarded-For"))
                 client = httpExchange.getRequestHeaders().getFirst("X-Forwarded-For").split(",")[0];
 
-            int ttnr = (int) MsAuthApplication.timeToNoRateLimit(client);
-            if (MsAuthApplication.handleRateLimit(client)) {
+            int ttnr = (int) timeToNoRateLimit(client);
+            if (handleRateLimit(client)) {
                 String httpResponse = "429 Ratelimited -- come back in "+ttnr+"ms";
                 httpExchange.sendResponseHeaders(429, httpResponse.length());
                 httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
