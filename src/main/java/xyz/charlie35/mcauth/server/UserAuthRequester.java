@@ -1,4 +1,4 @@
-package xyz.charlie35.mcauth_server;
+package xyz.charlie35.mcauth.server;
 
 import java.io.*;
 import java.net.*;

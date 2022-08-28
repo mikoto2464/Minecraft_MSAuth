@@ -1,4 +1,4 @@
-package xyz.charlie35.mcauth_server;
+package xyz.charlie35.mcauth.server;
 
 import org.json.JSONObject;
 
@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static xyz.charlie35.mcauth_server.MsAuthApplication.REDIRECT_URI;
-
 public class MsTokenRequester {
     public static TokenPair getFor(String authCode) throws IOException, AuthenticationException {
         try {
@@ -23,7 +21,7 @@ public class MsTokenRequester {
             arguments.put("client_secret", MsAuthApplication.CLIENT_SECRET);
             arguments.put("code", authCode);
             arguments.put("grant_type", "authorization_code");
-            arguments.put("redirect_uri", REDIRECT_URI);
+            arguments.put("redirect_uri", MsAuthApplication.REDIRECT_URI);
             StringJoiner sj = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet())
                 sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
@@ -119,7 +117,7 @@ public class MsTokenRequester {
             arguments.put("client_secret", MsAuthApplication.CLIENT_SECRET);
             arguments.put("refresh_token", code);
             arguments.put("grant_type", "refresh_token");
-            arguments.put("redirect_uri", REDIRECT_URI);
+            arguments.put("redirect_uri", MsAuthApplication.REDIRECT_URI);
             StringJoiner sj = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet())
                 sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
