@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static xyz.charlie35.mcauth.server.MsAuthApplication.authCache;
+import static xyz.charlie35.mcauth.server.util.HttpUtil.queryToMap;
 
 public class OAuthHandler implements HttpHandler {
 
@@ -108,18 +109,5 @@ public class OAuthHandler implements HttpHandler {
             httpExchange.sendResponseHeaders(400, httpResponse.length());
             httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
         }
-    }
-
-    public Map<String, String> queryToMap(@NotNull String query) {
-        Map<String, String> result = new HashMap<>();
-        for (String param : query.split("&")) {
-            String[] entry = param.split("=");
-            if (entry.length > 1) {
-                result.put(entry[0], entry[1]);
-            }else{
-                result.put(entry[0], "");
-            }
-        }
-        return result;
     }
 }

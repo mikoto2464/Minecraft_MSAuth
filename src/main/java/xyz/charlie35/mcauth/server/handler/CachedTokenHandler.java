@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static xyz.charlie35.mcauth.server.util.HttpUtil.queryToMap;
+
 public class CachedTokenHandler implements HttpHandler {
     @Override
     public void handle(@NotNull HttpExchange httpExchange) throws IOException {
@@ -77,18 +79,5 @@ public class CachedTokenHandler implements HttpHandler {
             httpExchange.sendResponseHeaders(200, resp.length());
             httpExchange.getResponseBody().write(resp.getBytes(StandardCharsets.US_ASCII));
         }
-    }
-
-    public Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<>();
-        for (String param : query.split("&")) {
-            String[] entry = param.split("=");
-            if (entry.length > 1) {
-                result.put(entry[0], entry[1]);
-            }else{
-                result.put(entry[0], "");
-            }
-        }
-        return result;
     }
 }

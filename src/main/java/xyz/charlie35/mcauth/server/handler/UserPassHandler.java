@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static xyz.charlie35.mcauth.server.util.HttpUtil.queryToMap;
+
 public class UserPassHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -74,18 +76,5 @@ public class UserPassHandler implements HttpHandler {
             httpExchange.sendResponseHeaders(400, httpResponse.length());
             httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
         }
-    }
-
-    public Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<>();
-        for (String param : query.split("&")) {
-            String[] entry = param.split("=");
-            if (entry.length > 1) {
-                result.put(entry[0], entry[1]);
-            }else{
-                result.put(entry[0], "");
-            }
-        }
-        return result;
     }
 }
