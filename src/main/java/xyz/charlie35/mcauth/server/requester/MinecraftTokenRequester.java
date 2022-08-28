@@ -1,5 +1,6 @@
 package xyz.charlie35.mcauth.server.requester;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import xyz.charlie35.mcauth.server.exception.AuthenticationException;
 import xyz.charlie35.mcauth.server.model.MinecraftProfile;
@@ -54,7 +55,7 @@ public class MinecraftTokenRequester {
         }
     }
 
-    public static void checkAccount(MinecraftToken minecraftToken) throws AuthenticationException, IOException {
+    public static void checkAccount(@NotNull MinecraftToken minecraftToken) throws AuthenticationException, IOException {
         try {
             URL url = new URL("https://api.minecraftservices.com/entitlements/mcstore");
             URLConnection con = url.openConnection();

@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static xyz.charlie35.mcauth.server.MsAuthApplication.authCache;
-import static xyz.charlie35.mcauth.server.util.HttpUtil.queryToMap;
+import static xyz.charlie35.mcauth.server.util.HttpUtil.*;
 
 public class OAuthHandler implements HttpHandler {
 
@@ -50,8 +50,8 @@ public class OAuthHandler implements HttpHandler {
             if (httpExchange.getRequestHeaders().containsKey("X-Forwarded-For"))
                 client = httpExchange.getRequestHeaders().getFirst("X-Forwarded-For").split(",")[0];
 
-            int ttnr = (int) MsAuthApplication.timeToNoRateLimit(client);
-            if (MsAuthApplication.handleRateLimit(client)) {
+            int ttnr = (int) timeToNoRateLimit(client);
+            if (handleRateLimit(client)) {
                 String httpResponse = "429 Ratelimited -- come back in "+ttnr+"ms";
                 httpExchange.sendResponseHeaders(429, httpResponse.length());
                 httpExchange.getResponseBody().write(httpResponse.getBytes(StandardCharsets.US_ASCII));
